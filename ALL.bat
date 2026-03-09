@@ -10,7 +10,6 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
-title Tambah SSID WiFi Otomatis
 color 0A
 
 set TEMP=%temp%
@@ -25,29 +24,30 @@ echo ================================================
 echo           MENU SKRIP GABUNGAN (Administrator)
 echo ================================================
 echo 1. Login SSID WiFi
-echo 2. Shortcut Office di Desktop
-echo 3. Nonaktifkan BitLocker (Service)
-echo 4. Copy SN BIOS
-echo 5. Web QC
-echo 6. Massgrave script 
-echo 7. Note akun OHS (auto_note_ohs)
+echo 2. Icon This PC
+echo 3. Shortcut Office di Desktop
+echo 4. Nonaktifkan BitLocker (Service)
+echo 5. Copy SN BIOS
+echo 6. Web QC
+echo 7. Massgrave script 
+echo 8. Note akun OHS (auto_note_ohs)
 echo 0. Keluar
 echo ================================================
 echo Note : Data Encryption jangan lupa dimatikan.
 echo ================================================
 echo Coming Soon 
 echo 1. Wallpaper (auto_copy_wallpaper)
-echo 2. This_PC icon
 echo ================================================
-set /p choice=Masukkan pilihan (0-7): 
+set /p choice=Masukkan pilihan (0-8): 
 
 if "%choice%"=="1" goto wifi_add
-if "%choice%"=="2" goto office_shortcuts
-if "%choice%"=="3" goto disable_bitlocker
-if "%choice%"=="4" goto autocopysn
-if "%choice%"=="5" goto open_web_qc
-if "%choice%"=="6" goto massgrave
-if "%choice%"=="7" goto note_ohs
+if "%choice%"=="2" goto this_pc
+if "%choice%"=="3" goto office_shortcuts
+if "%choice%"=="4" goto disable_bitlocker
+if "%choice%"=="5" goto autocopysn
+if "%choice%"=="6" goto open_web_qc
+if "%choice%"=="7" goto massgrave
+if "%choice%"=="8" goto note_ohs
 if "%choice%"=="0" goto :end
 
 echo Pilihan tidak valid. Tekan sembarang tombol...
@@ -135,7 +135,21 @@ pause
 goto main_menu
 
 :: ===============================
-:: 2. Buat Shortcut Office di Desktop
+:: 2. Buat Shortcut This_PC di Desktop
+:: ===============================
+:this_pc
+echo Menjalankan: Buat Shortcut This_PC di Desktop...
+@echo off
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /t REG_DWORD /d 0 /f
+taskkill /f /im explorer.exe >nul
+start explorer.exe
+
+echo Shortcut This_PC berhasil dibuat di Desktop.
+pause
+goto main_menu
+
+:: ===============================
+:: 3. Buat Shortcut Office di Desktop
 :: ===============================
 :office_shortcuts
 echo Menjalankan: Buat Shortcut Office di Desktop...
@@ -151,7 +165,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 3. Nonaktifkan BitLocker (BDESVC)
+:: 4. Nonaktifkan BitLocker (BDESVC)
 :: ===============================
 :disable_bitlocker
 echo Menonaktifkan layanan yang berkaitan dengan BitLocker...
@@ -162,7 +176,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 4. AutoCopySN (Copy BIOS Serial ke clipboard)
+:: 5. AutoCopySN (Copy BIOS Serial ke clipboard)
 :: ===============================
 :autocopysn
 echo Menyalin Serial Number BIOS ke clipboard...
@@ -172,7 +186,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 5. auto_open_web_qc (Buka beberapa halaman di Edge inprivate)
+:: 6. auto_open_web_qc (Buka beberapa halaman di Edge inprivate)
 :: ===============================
 :open_web_qc
 echo Membuka halaman pengecekan di Microsoft Edge (inprivate)...
@@ -185,7 +199,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 6. auto_open_massgrave (PowerShell dari web)  <-- PERINGATAN
+:: 7. auto_open_massgrave (PowerShell dari web)  <-- PERINGATAN
 :: ===============================
 :massgrave
 echo PERINGATAN: Tindakan ini akan mengeksekusi skrip yang diunduh dari internet.
@@ -201,14 +215,14 @@ pause
 goto main_menu
 
 :: ===============================
-:: 7. auto_note_ohs (Buat file akun OHS di Desktop)
+:: 8. auto_note_ohs (Buat file akun OHS di Desktop)
 :: ===============================
 :note_ohs
 echo Membuat file akun OHS di Desktop...
 set /p nama_barang= Masukkan Nama Merk Laptop: 
-set /p angka_sbjb= Masukkan Angka SBJB: 
+set /p angka_stbjb= Masukkan Angka STBJB: 
 (
-    echo email: %nama_barang%.s.bjb.%angka_sbjb%@outlook.com
+    echo email: %nama_barang%.s.tbjb.%angka_stbjb%@outlook.com
     echo pass: Office123
 ) > "%USERPROFILE%\Desktop\AKUN OHS JANGAN DI HAPUS.txt"
 echo File dibuat di Desktop: AKUN OHS JANGAN DI HAPUS.txt
