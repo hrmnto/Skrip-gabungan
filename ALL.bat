@@ -25,29 +25,29 @@ echo           MENU SKRIP GABUNGAN (Administrator)
 echo ================================================
 echo 1. Login SSID WiFi
 echo 2. Icon This PC
-echo 3. Shortcut Office di Desktop
-echo 4. Nonaktifkan BitLocker (Service)
-echo 5. Copy SN BIOS
-echo 6. Web QC
-echo 7. Massgrave script 
-echo 8. Note akun OHS (auto_note_ohs)
+echo 3. Wallpaper (auto_copy)
+echo 4. Shortcut Office di Desktop
+echo 5. Nonaktifkan BitLocker (Service)
+echo 6. Copy SN BIOS
+echo 7. Web QC
+echo 8. Massgrave script 
+echo 9. Note akun OHS (auto_note_ohs)
 echo 0. Keluar
 echo ================================================
 echo Note : Data Encryption jangan lupa dimatikan.
 echo ================================================
-echo Coming Soon 
-echo 1. Wallpaper (auto_copy_wallpaper)
-echo ================================================
-set /p choice=Masukkan pilihan (0-8): 
+
+set /p choice=Masukkan pilihan (0-9): 
 
 if "%choice%"=="1" goto wifi_add
 if "%choice%"=="2" goto this_pc
-if "%choice%"=="3" goto office_shortcuts
-if "%choice%"=="4" goto disable_bitlocker
-if "%choice%"=="5" goto autocopysn
-if "%choice%"=="6" goto open_web_qc
-if "%choice%"=="7" goto massgrave
-if "%choice%"=="8" goto note_ohs
+if "%choice%"=="3" goto wallpaper
+if "%choice%"=="4" goto office_shortcuts
+if "%choice%"=="5" goto disable_bitlocker
+if "%choice%"=="6" goto autocopysn
+if "%choice%"=="7" goto open_web_qc
+if "%choice%"=="8" goto massgrave
+if "%choice%"=="9" goto note_ohs
 if "%choice%"=="0" goto :end
 
 echo Pilihan tidak valid. Tekan sembarang tombol...
@@ -149,7 +149,71 @@ pause
 goto main_menu
 
 :: ===============================
-:: 3. Buat Shortcut Office di Desktop
+:: 3. Wallpaper
+:: ===============================
+:wallpaper
+echo Menjalankan: Wallpaper auto copy...
+@echo off
+setlocal enabledelayedexpansion
+
+REM folder gambar (di tempat yang sama dengan BAT)
+set "SOURCE=%~dp0WALPAPER"
+
+REM folder tujuan
+set "DEST=%USERPROFILE%\Pictures"
+
+echo ===== DEBUG INFO =====
+echo SOURCE = %SOURCE%
+echo DEST   = %DEST%
+echo ======================
+
+REM cek folder sumber
+if not exist "%SOURCE%" (
+    echo Folder WALPAPER tidak ditemukan!
+    pause
+    exit
+)
+
+REM buat folder tujuan jika belum ada
+if not exist "%DEST%" mkdir "%DEST%"
+
+echo.
+echo Menyalin semua gambar ke Pictures...
+
+for %%i in ("%SOURCE%\*.jpg" "%SOURCE%\*.jpeg" "%SOURCE%\*.png" "%SOURCE%\*.bmp") do (
+    if exist "%%i" (
+        copy "%%i" "%DEST%\" /Y >nul
+        echo Disalin: %%~nxi
+    )
+)
+
+echo.
+echo Memilih wallpaper secara random...
+
+REM hitung jumlah gambar
+set count=0
+for %%i in ("%DEST%\*.jpg") do (
+    set /a count+=1
+    set img[!count!]=%%i
+)
+
+REM pilih random
+set /a rand=(%random% %% count) + 1
+set "WP=!img[%rand%]!"
+
+echo Wallpaper terpilih:
+echo !WP!
+
+REM set wallpaper menggunakan PowerShell
+powershell -command "(Add-Type '[DllImport(\"user32.dll\")]public static extern int SystemParametersInfo(int uAction,int uParam,string lpvParam,int fuWinIni);' -Name a -Pas)::SystemParametersInfo(20,0,'!WP!',3)"
+
+echo.
+echo Wallpaper berhasil dipasang.
+pause
+goto main_menu
+
+:: ===============================
+:: 4. Buat Shortcut Office di Desktop
 :: ===============================
 :office_shortcuts
 echo Menjalankan: Buat Shortcut Office di Desktop...
@@ -165,7 +229,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 4. Nonaktifkan BitLocker (BDESVC)
+:: 5. Nonaktifkan BitLocker (BDESVC)
 :: ===============================
 :disable_bitlocker
 echo Menonaktifkan layanan yang berkaitan dengan BitLocker...
@@ -176,7 +240,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 5. AutoCopySN (Copy BIOS Serial ke clipboard)
+:: 6. AutoCopySN (Copy BIOS Serial ke clipboard)
 :: ===============================
 :autocopysn
 echo Menyalin Serial Number BIOS ke clipboard...
@@ -186,7 +250,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 6. auto_open_web_qc (Buka beberapa halaman di Edge inprivate)
+:: 7. auto_open_web_qc (Buka beberapa halaman di Edge inprivate)
 :: ===============================
 :open_web_qc
 echo Membuka halaman pengecekan di Microsoft Edge (inprivate)...
@@ -199,7 +263,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 7. auto_open_massgrave (PowerShell dari web)  <-- PERINGATAN
+:: 8. auto_open_massgrave (PowerShell dari web)  <-- PERINGATAN
 :: ===============================
 :massgrave
 echo PERINGATAN: Tindakan ini akan mengeksekusi skrip yang diunduh dari internet.
@@ -215,7 +279,7 @@ pause
 goto main_menu
 
 :: ===============================
-:: 8. auto_note_ohs (Buat file akun OHS di Desktop)
+:: 9. auto_note_ohs (Buat file akun OHS di Desktop)
 :: ===============================
 :note_ohs
 echo Membuat file akun OHS di Desktop...
@@ -233,3 +297,4 @@ goto main_menu
 echo Keluar...
 endlocal
 exit /b 0
+
