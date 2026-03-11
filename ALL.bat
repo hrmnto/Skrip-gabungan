@@ -138,16 +138,16 @@ goto main_menu
 :: 2. Buat Shortcut This_PC di Desktop
 :: ===============================
 :this_pc
-echo Menjalankan: Buat Shortcut This_PC di Desktop...
+echo Menjalankan: Buat Shortcut This PC di Desktop...
 @echo off
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /t REG_DWORD /d 0 /f
-taskkill /f /im explorer.exe >nul
-start explorer.exe
 
-echo Shortcut This_PC berhasil dibuat di Desktop.
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel" /v "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" /t REG_DWORD /d 0 /f >nul
+
+ie4uinit.exe -show
+
+echo Shortcut This PC berhasil ditampilkan di Desktop.
 pause
 goto main_menu
-
 :: ===============================
 :: 3. Wallpaper
 :: ===============================
@@ -297,4 +297,3 @@ goto main_menu
 echo Keluar...
 endlocal
 exit /b 0
-
