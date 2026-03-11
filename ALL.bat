@@ -27,14 +27,14 @@ echo 1. Login SSID WiFi
 echo 2. Icon This PC
 echo 3. Wallpaper (auto_copy)
 echo 4. Shortcut Office di Desktop
-echo 5. Nonaktifkan BitLocker (Service)
+echo 5. Nonaktifkan "BitLocker & Encryption"
 echo 6. Copy SN BIOS
 echo 7. Web QC
 echo 8. Massgrave script 
 echo 9. Note akun OHS (auto_note_ohs)
 echo 0. Keluar
 echo ================================================
-echo Note : Data Encryption jangan lupa dimatikan.
+echo Note : 
 echo ================================================
 
 set /p choice=Masukkan pilihan (0-9): 
@@ -232,10 +232,24 @@ goto main_menu
 :: 5. Nonaktifkan BitLocker (BDESVC)
 :: ===============================
 :disable_bitlocker
+echo Mengecek status BitLocker...
+manage-bde -status
+
+echo.
+echo Menonaktifkan BitLocker pada drive C...
+manage-bde -off C: >nul 2>&1
+
+echo.
 echo Menonaktifkan layanan yang berkaitan dengan BitLocker...
-sc stop "BDESVC" >nul 2>&1
-sc config "BDESVC" start= disabled >nul 2>&1
-echo Jika layanan BitLocker ada, maka telah dinonaktifkan.
+sc stop BDESVC >nul 2>&1
+sc config BDESVC start= disabled >nul 2>&1
+
+echo.
+echo Proses decryption sedang berjalan...
+echo Tunggu sampai selesai (bisa memakan waktu cukup lama).
+
+echo.
+echo Layanan BitLocker telah dinonaktifkan (jika tersedia).
 pause
 goto main_menu
 
